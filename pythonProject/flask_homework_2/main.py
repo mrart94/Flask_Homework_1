@@ -1,31 +1,33 @@
 from flask import Flask
 from flask import render_template
 
-from functions import get_candidate, load_candidates_from_json, get_candidates_by_name, get_candidates_by_skill
+from functions import *
 
 # Начало программы
 app = Flask(__name__)
 
-#Работает
-@app.route("/index.html")
+
+#Выводит мою карточку
+@app.route("/mi")
 def index():
     return render_template("index.html", title="Dmitry")
 
-#Работает
+
+#Выводит всех кандидатов
 @app.route("/")
 def candidates():
     temp = load_candidates_from_json()
-
     return render_template("list.html", temp=temp)
 
-#Не работает фото
+
+#Выводит карточку кандидата по id
 @app.route("/candidate/<int:x>")
 def candidate(x):
     temp = get_candidate(x)
-    return render_template("card.html", name=temp['name'], position=temp['position'], picture=temp['picture'],
-                           skills=temp['skills'])
+    return render_template("card.html", temp=temp)
 
-#Работает
+
+#Выводит кандидатов с указанным именем
 @app.route("/search/<candidate_name>")
 def name_(candidate_name):
     temp = get_candidates_by_name(candidate_name)
@@ -33,6 +35,7 @@ def name_(candidate_name):
     return render_template("search.html", count=count, temp=temp)
 
 
+#Выводит кандидатов с указанным скиллом
 @app.route("/skill/<skill_name>")
 def skill(skill_name):
     temp = get_candidates_by_skill(skill_name)
